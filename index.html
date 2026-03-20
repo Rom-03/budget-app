@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Financial Dashboard - Cloud Sync</title>
-    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
-    <script src="https://unpkg.com/dexie-cloud-addon/dist/dexie-cloud-addon.js"></script>
+   <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+
+<script src="https://unpkg.com/dexie-cloud-addon/dist/dexie-cloud-addon.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
 <body data-theme="light">
@@ -18,24 +19,27 @@
 </div>
 
 <script>
-// --- DEXIE CLOUD CONFIGURATION ---
-const db = new Dexie("BudgetBusinessDB", { addons: [dexieCloud] });
+  // 3. IMPORTANT: Access it using window.dexieCloud 
+  // to ensure the browser finds it correctly.
+  const { dexieCloud } = window; 
 
-db.version(1).stores({
-    incomes: '@id, date, desc',
-    expenses: '@id, date, desc, cat',
-    unbudgeted: '@id, date, desc',
-    liabilities: '@id, date, desc',
-    harvests: '@id, desc',
-    harvestTransactions: '@id, date, harvestId',
-    contributions: '@id, date, contributor',
-    businessNotes: '@id, date'
-});
+  const db = new Dexie("BudgetBusinessDB", { addons: [dexieCloud] });
+  
+  db.version(1).stores({
+      incomes: '@id, date, desc',
+      expenses: '@id, date, desc, cat',
+      unbudgeted: '@id, date, desc',
+      liabilities: '@id, date, desc',
+      harvests: '@id, desc',
+      harvestTransactions: '@id, date, harvestId',
+      contributions: '@id, date, contributor',
+      businessNotes: '@id, date'
+  });
 
-db.cloud.configure({
-    databaseUrl: "https://z47mg0loj.dexie.cloud",
-    requireLogin: true // This forces the Dexie Login popup automatically
-});
+  db.cloud.configure({
+      databaseUrl: "https://z47mg0loj.dexie.cloud",
+      requireLogin: true
+  });
 
 // --- STATE VARIABLES ---
 let incomes=[], expenses=[], unbudgeted=[], liabilities=[], harvests=[], harvestTransactions=[], contributions=[], businessNotes=[], myChart, myTrendChart, currentAddType = '', editId = null, deleteTgt={};
